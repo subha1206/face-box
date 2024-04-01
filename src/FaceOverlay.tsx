@@ -1,4 +1,5 @@
 // FaceOverlay.tsx
+
 import { useEffect, useRef, FC } from "react";
 import { fabric } from "fabric";
 
@@ -34,8 +35,6 @@ const FaceOverlay: FC<FaceOverlayProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  console.log({ width, height }, "FaceOverlay props");
-
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -67,34 +66,46 @@ const FaceOverlay: FC<FaceOverlayProps> = ({
         return; // Skip this scene if there are no face configurations
       }
 
-      const highestScoreBox = scene.face_config.reduce((prev, current) =>
-        prev.score > current.score ? prev : current
-      );
+      // @ts-expect-error
+      const faceToAddArr = [];
 
-      const { x, y, size } = highestScoreBox;
+      scene.face_config.forEach((face) => {
+        console.log(scene.face_config, "Face config");
+        const { x, y, size } = face;
 
-      const adjustedX = x * scaleX;
-      const adjustedY = y * scaleY;
-      const adjustedSize = size * Math.min(scaleX, scaleY);
+        const adjustedX = x * scaleX;
+        const adjustedY = y * scaleY;
+        const adjustedSize = size * Math.min(scaleX, scaleY);
 
-      const visibilityIncreaseFactor = 2;
-      const enhancedSize = adjustedSize * visibilityIncreaseFactor;
+        const visibilityIncreaseFactor = 2;
+        const enhancedSize = adjustedSize * visibilityIncreaseFactor;
 
-      const rect = new fabric.Rect({
-        left: adjustedX - enhancedSize / 2,
-        top: adjustedY - enhancedSize / 2,
-        width: enhancedSize,
-        height: enhancedSize,
-        fill: "transparent",
-        stroke: "red",
-        strokeWidth: 4,
+        const faceRectLeft = adjustedX - enhancedSize / 2;
+        const faceRectTop = adjustedY - enhancedSize / 2;
+
+        const rect = new fabric.Rect({
+          left: faceRectLeft,
+          top: faceRectTop,
+          width: enhancedSize,
+          height: enhancedSize,
+          fill: "transparent",
+          stroke: "red",
+          strokeWidth: 4,
+        });
+        const text = new fabric.Text(face.score.toFixed(2), {
+          left: faceRectLeft,
+          top: faceRectTop + enhancedSize + 4,
+          fill: "red",
+          fontSize: 16,
+        });
+        faceToAddArr.push(rect);
+        faceToAddArr.push(text);
       });
-      canvas.clear();
-
-      canvas.add(rect);
+      // @ts-expect-error
+      faceToAddArr?.forEach((face) => {
+        canvas.add(face);
+      });
     });
-
-    canvas.requestRenderAll();
   }, [currentTime, faceConfigs, width, height]);
 
   return (

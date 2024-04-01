@@ -1,5 +1,5 @@
 export const faceConfigData = {
-  face_config_data: [
+  scores: [
     {
       scene_idx: 0,
       face_config: [
@@ -4060,7 +4060,7 @@ export const faceConfigData = {
       scene_end_ms: 678520,
     },
   ],
-  full_video_url:
+  full_video_path:
     "https://storage.googleapis.com/vidyo-bucket-stage/logs/full-videos/780ed3e8-3285-4d4d-a99c-8d3c7ecb8067.mp4",
   fps: 25,
 };

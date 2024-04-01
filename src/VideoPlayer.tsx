@@ -38,6 +38,12 @@ const VideoPlayer: FC<VideoPlayerProps> = ({
     };
   }, [onTimeUpdate, onVideoLoad]);
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+    }
+  }, [videoSrc]);
+
   return (
     <video
       ref={videoRef}
